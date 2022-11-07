@@ -7,8 +7,8 @@ public class Employee
     [Key]
     public int EmployeeId { get; set; }
     [Required]
-    public string Name { get; set; }
-    public string Role { get; set; }
-    public string Office { get; set; }
-    public string Experience { get; set; }
+    public string? Name { get; set; }
+    public string? Role { get; set; }
+    public string? Office { get; set; }
+    public string? Experience { get; set; }
 }
