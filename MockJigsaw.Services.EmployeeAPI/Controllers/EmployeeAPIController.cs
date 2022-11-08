@@ -39,7 +39,11 @@ public class EmployeeAPIController : ControllerBase
     {
         try
         {
-            EmployeeDto employeeDto = await _employeeRepository.GetEmployeeById(employeeId);
+            EmployeeDto? employeeDto = await _employeeRepository.GetEmployeeById(employeeId);
+            if (employeeDto == null)
+            {
+                throw new Exception("The employeeId was not found in the database");
+            }
             _response.Result = employeeDto;
         }
         catch (Exception e)

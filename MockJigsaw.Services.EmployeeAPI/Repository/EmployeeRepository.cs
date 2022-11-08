@@ -47,20 +47,13 @@ public class EmployeeRepository : IEmployeeRepository
 
     public async Task<bool> DeleteEmployee(long employeeId)
     {
-        try
+        Employee employee = await _db.Employees.FirstOrDefaultAsync(x => x.EmployeeId == employeeId);
+        if (employee == null)
         {
-            Employee employee = await _db.Employees.FirstOrDefaultAsync(x => x.EmployeeId == employeeId);
-            if (employee == null)
-            {
-                return false;
-            }
-            _db.Employees.Remove(employee);
-            await _db.SaveChangesAsync();
-            return true;
+            throw new Exception("The employeeId was not found the database");
         }
-        catch (Exception e)
-        {
-            return false;
-        }
+        _db.Employees.Remove(employee);
+        await _db.SaveChangesAsync();
+        return true;
     }
 }
