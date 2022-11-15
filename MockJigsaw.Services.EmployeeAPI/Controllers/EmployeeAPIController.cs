@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MockJigsaw.Services.EmployeeAPI.Models.Dto;
 using MockJigsaw.Services.EmployeeAPI.Repository;
@@ -7,16 +8,17 @@ namespace MockJigsaw.Services.EmployeeAPI.Controllers;
 [Route("api/employees")]
 public class EmployeeAPIController : ControllerBase
 {
-    private ResponseDto _response;
+    private ProductResponseDto _response;
     private readonly IEmployeeRepository _employeeRepository;
 
     public EmployeeAPIController(IEmployeeRepository employeeRepository)
     {
         _employeeRepository = employeeRepository;
-        this._response = new ResponseDto();
+        this._response = new ProductResponseDto();
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<object> Get()
     {
         try
@@ -34,6 +36,7 @@ public class EmployeeAPIController : ControllerBase
     }
     
     [HttpGet]
+    [Authorize(Roles = "Admin,Employee",AuthenticationSchemes = "Employee")]
     [Route("{employeeId}")]
     public async Task<object> Get(long employeeId)
     {
@@ -56,6 +59,7 @@ public class EmployeeAPIController : ControllerBase
     }
     
     [HttpPost]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<object> Post([FromBody] EmployeeDto employeeDto)
     {
         try
@@ -73,6 +77,7 @@ public class EmployeeAPIController : ControllerBase
     }
     
     [HttpPut]
+    [Authorize(Roles = "Admin")]
     public async Task<object> Put([FromBody] EmployeeDto employeeDto)
     {
         try
@@ -90,6 +95,7 @@ public class EmployeeAPIController : ControllerBase
     }
     
     [HttpDelete]
+    [Authorize(Roles = "Admin")]
     public async Task<object> Delete(long employeeId)
     {
         try
