@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,7 +13,7 @@ using MockJigsaw.Services.EmployeeAPI.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var jwtKey = builder.Configuration.GetValue<string>("Jwt:Key");
 builder.Services.AddControllers();
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
@@ -24,10 +23,9 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
             ValidIssuer = "MockJigsaw",
             ValidateAudience = false,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("mockjigsawsecuritykeyanfropsdfjsgqpsdxamasdfnperg")),
-            RoleClaimType = "roles",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            RoleClaimType = "role",
         };
-        options.Authority = "http://localhost:7162/";
         options.RequireHttpsMetadata = false;
         options.SaveToken = true;
         options.IncludeErrorDetails = true;
@@ -38,10 +36,9 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
         {
             ValidIssuer = "MockJigsaw",
             ValidateAudience = false,
-            ValidateIssuerSigningKey = true,IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("mockjigsawsecuritykeyanfropsdfjsgqpsdxamasdfnperg")),
-            RoleClaimType = "roles",
+            ValidateIssuerSigningKey = true,IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            RoleClaimType = "role",
         };
-        options.Authority = "http://localhost:7162/";
         options.RequireHttpsMetadata = false;
         options.SaveToken = true;
         options.IncludeErrorDetails = true;
@@ -53,10 +50,9 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
             ValidIssuer = "MockJigsaw",
             ValidateAudience = false,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("mockjigsawsecuritykeyanfropsdfjsgqpsdxamasdfnperg")),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             RoleClaimType = "role",
         };
-        //options.Authority = "http://localhost:7162/";
         options.RequireHttpsMetadata = false;
         options.SaveToken = true;
         options.IncludeErrorDetails = true;
@@ -91,28 +87,12 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        { securityScheme, new string[] { } }
+        { securityScheme, Array.Empty<string>() }
     });
-    /*c.AddSecurityRequirement(new OpenApiSecurityRequirement { 
-    {
-        new OpenApiSecurityScheme 
-        {
-            Reference = new OpenApiReference
-            {
-                Type = ReferenceType.SecurityScheme,
-                Id = "Bearer"
-            },
-            Scheme = "oauth2",
-            Name = "Bearer",
-            In = ParameterLocation.Header
-        },
-        new List<string>()
-    }
-        
-    });*/
 });
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
-IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+var mapper = MappingConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
