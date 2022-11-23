@@ -16,9 +16,11 @@ namespace MockJigsaw.Services.EmployeeAPI.Migrations
                     EmployeeId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Role = table.Column<string>(type: "text", nullable: false),
-                    Office = table.Column<string>(type: "text", nullable: false),
-                    Experience = table.Column<string>(type: "text", nullable: false)
+                    Role = table.Column<string>(type: "text", nullable: true),
+                    Office = table.Column<string>(type: "text", nullable: true),
+                    Experience = table.Column<string>(type: "text", nullable: true),
+                    Email = table.Column<string>(type: "text", nullable: true),
+                    Password = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

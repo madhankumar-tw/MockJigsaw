@@ -29,8 +29,10 @@ namespace MockJigsaw.Services.EmployeeAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EmployeeId"));
 
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
                     b.Property<string>("Experience")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -38,11 +40,12 @@ namespace MockJigsaw.Services.EmployeeAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Office")
-                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
                         .HasColumnType("text");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("EmployeeId");

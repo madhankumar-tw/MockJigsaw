@@ -1,4 +1,5 @@
 using MockJigsaw.Services.EmployeeAPI.Models.Dto;
+using MockJigsaw.Services.EmployeeAPI.Repository;
 using MockJigsaw.Services.EmployeeAPI.Security;
 
 namespace MockJigsaw.Services.EmployeeAPI.Services;
@@ -6,32 +7,34 @@ namespace MockJigsaw.Services.EmployeeAPI.Services;
 public class AuthService : IAuthService
 {
     private readonly IJwtTokenCreator _jwtTokenCreator;
+    private readonly IEmployeeRepository _employeeRepository;
 
-    public AuthService(IJwtTokenCreator jwtTokenCreator)
+    public AuthService(IJwtTokenCreator jwtTokenCreator, IEmployeeRepository employeeRepository)
     {
         _jwtTokenCreator = jwtTokenCreator;
+        _employeeRepository = employeeRepository;
     }
     
-    public Task<AuthResponseDto> CreateAuthSession(LoginRequestDto loginDetails)
+    public async Task<AuthResponseDto> CreateAuthSession(LoginRequestDto loginDetails)
     {
-        if (loginDetails.username == Credentials.Employee.username && loginDetails.password == Credentials.Employee.password)
+        string? token;
+        if (loginDetails.Email == Credentials.Admin.Email && loginDetails.Password == Credentials.Admin.Password)
         {
-            var token = _jwtTokenCreator.CreateSessionToken(loginDetails.username, "Employee");
-            return Task.FromResult(new AuthResponseDto
+            token = _jwtTokenCreator.CreateSessionToken("Administrator", "Admin");
+            return await Task.FromResult(new AuthResponseDto
             {
                 AccessToken = token,
                 TokenType = "Bearer"
             });
         }
-        if (loginDetails.username == Credentials.Admin.username && loginDetails.password == Credentials.Admin.password)
+
+        var employee = await _employeeRepository.GetEmployeeByCredentials(loginDetails.Email, loginDetails.Password);
+        if (employee == null) throw new InvalidDataException("Enter valid credentials");
+        token = _jwtTokenCreator.CreateSessionToken(employee.Name, "Employee");
+        return await Task.FromResult(new AuthResponseDto
         {
-            var token = _jwtTokenCreator.CreateSessionToken(loginDetails.username, "Admin");
-            return Task.FromResult(new AuthResponseDto
-            {
-                AccessToken = token,
-                TokenType = "Bearer"
-            });
-        }
-        throw new InvalidDataException("Enter valid credentials");
+            AccessToken = token,
+            TokenType = "Bearer"
+        });
     }
 }

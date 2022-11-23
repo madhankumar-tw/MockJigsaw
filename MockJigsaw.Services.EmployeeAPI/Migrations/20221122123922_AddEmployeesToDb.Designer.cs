@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MockJigsaw.Services.EmployeeAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221106120040_AddEmployeesToDb")]
+    [Migration("20221122123922_AddEmployeesToDb")]
     partial class AddEmployeesToDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,8 +31,10 @@ namespace MockJigsaw.Services.EmployeeAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EmployeeId"));
 
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
                     b.Property<string>("Experience")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -40,11 +42,12 @@ namespace MockJigsaw.Services.EmployeeAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Office")
-                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
                         .HasColumnType("text");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("EmployeeId");

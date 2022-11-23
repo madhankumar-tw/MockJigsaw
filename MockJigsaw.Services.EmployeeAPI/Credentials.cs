@@ -6,16 +6,9 @@ namespace MockJigsaw.Services.EmployeeAPI;
 
 public static class Credentials
 {
-    public static LoginRequestDto Employee = new LoginRequestDto
+    public static readonly LoginRequestDto Admin = new LoginRequestDto
     {
-        username = "employee1",
-        password = "!123@employee"
+        Email = "admin@company.com",
+        Password = "!123@admin"
     };
-    
-    public static LoginRequestDto Admin = new LoginRequestDto
-    {
-        username = "admin1",
-        password = "!123@admin"
-    };
-
 }
