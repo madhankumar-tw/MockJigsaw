@@ -6,6 +6,8 @@ public interface IEmployeeRepository
 {
     Task<IEnumerable<EmployeeDto>> GetEmployees();
     Task<EmployeeDto> GetEmployeeById(long employeeId);
-    Task<EmployeeDto> CreateUpdateEmployee(EmployeeDto employeeDto);
+    Task<EmployeeDto> GetEmployeeByCredentials(string? email, string? password);
+    Task<EmployeeDto> CreateEmployee(EmployeeDto employeeDto);
+    Task<EmployeeDto> UpdateEmployee(EmployeeDto employeeDto);
     Task<bool> DeleteEmployee(long employeeId);
 }

@@ -8,13 +8,13 @@ namespace MockJigsaw.Services.EmployeeAPI.Controllers;
 [Route("api/employees")]
 public class EmployeeAPIController : ControllerBase
 {
-    private ProductResponseDto _response;
+    private readonly EmployeeResponseDto _response;
     private readonly IEmployeeRepository _employeeRepository;
 
     public EmployeeAPIController(IEmployeeRepository employeeRepository)
     {
         _employeeRepository = employeeRepository;
-        this._response = new ProductResponseDto();
+        this._response = new EmployeeResponseDto();
     }
 
     [HttpGet]
@@ -23,7 +23,7 @@ public class EmployeeAPIController : ControllerBase
     {
         try
         {
-            IEnumerable<EmployeeDto> employeeDtos = await _employeeRepository.GetEmployees();
+            var employeeDtos = await _employeeRepository.GetEmployees();
             _response.Result = employeeDtos;
         }
         catch (Exception e)
@@ -42,7 +42,7 @@ public class EmployeeAPIController : ControllerBase
     {
         try
         {
-            EmployeeDto? employeeDto = await _employeeRepository.GetEmployeeById(employeeId);
+            var employeeDto = await _employeeRepository.GetEmployeeById(employeeId);
             if (employeeDto == null)
             {
                 throw new Exception("The employeeId was not found in the database");
@@ -64,7 +64,7 @@ public class EmployeeAPIController : ControllerBase
     {
         try
         {
-            EmployeeDto res = await _employeeRepository.CreateUpdateEmployee(employeeDto);
+            var res = await _employeeRepository.UpdateEmployee(employeeDto);
             _response.Result = res;
         }
         catch (Exception e)
@@ -82,7 +82,7 @@ public class EmployeeAPIController : ControllerBase
     {
         try
         {
-            EmployeeDto res = await _employeeRepository.CreateUpdateEmployee(employeeDto);
+            var res = await _employeeRepository.CreateEmployee(employeeDto);
             _response.Result = res;
         }
         catch (Exception e)
@@ -100,7 +100,7 @@ public class EmployeeAPIController : ControllerBase
     {
         try
         {
-            bool isSuccess = await _employeeRepository.DeleteEmployee(employeeId);
+            var isSuccess = await _employeeRepository.DeleteEmployee(employeeId);
             _response.Result = isSuccess;
         }
         catch (Exception e)
