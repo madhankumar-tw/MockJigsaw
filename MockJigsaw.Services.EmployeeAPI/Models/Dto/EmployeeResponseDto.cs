@@ -1,6 +1,6 @@
 namespace MockJigsaw.Services.EmployeeAPI.Models.Dto;
 
-public class ProductResponseDto
+public class EmployeeResponseDto
 {
     public bool IsSuccess { get; set; } = true;
     public object? Result { get; set; }
